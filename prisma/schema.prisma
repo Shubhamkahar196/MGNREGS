@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model District {
+  id String @id @default(cuid())
+  districtId String @unique
+  name String
+  state String
+  latitude Float?
+  longitude Float?
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+
+   performances Performance[]
+}
+
+
+model Performance {
+  id          String   @id @default(cuid())
+  districtId  String
+  district    District @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  month       Int
+  year        Int
+  totalHouseholds Int
+  totalWorkers    Int
+  personDays      Int
+  womenParticipation Float
+  scstParticipation  Float
+  totalFunds     Float
+  fundsUtilized  Float
+  createdAt     DateTime @default(now())
+  
+  @@unique([districtId, month, year])
+}
