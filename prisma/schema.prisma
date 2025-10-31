@@ -43,6 +43,6 @@ model Performance {
   totalFunds     Float
   fundsUtilized  Float
   createdAt     DateTime @default(now())
-  
+
   @@unique([districtId, month, year])
 }
