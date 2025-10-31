@@ -65,7 +65,7 @@ export default function LocationDetector({ onDistrictDetected, onError }: Locati
         <div className="flex-1">
           <h3 className="font-semibold text-blue-900 text-lg mb-1">Auto-detect your location</h3>
           <p className="text-blue-700 text-sm">
-            We'll use your device's location to find your district automatically
+            We&apos;ll use your device&apos;s location to find your district automatically
           </p>
         </div>
         <button

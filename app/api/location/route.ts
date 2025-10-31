@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       { success: false, error: 'Coordinates required' },
       { status: 400 }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to get location' },
       { status: 500 }

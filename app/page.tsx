@@ -14,7 +14,7 @@ export default function Home() {
       // In a real app, you'd match the district name with your database
       setSelectedDistrict({ id: district.toLowerCase().replace(/\s+/g, '-'), name: district });
       setError('');
-    } catch (err) {
+    } catch {
       setError('District not found in database');
     }
   };

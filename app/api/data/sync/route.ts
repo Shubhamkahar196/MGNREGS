@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { MGNREGSApiClient } from "../../../lib/api-client";
 import { prisma } from "../../../lib/database";
 
+interface PerformanceRecord {
+  districtId: string;
+  month: number;
+  year: number;
+  totalHouseholds: number;
+  totalWorkers: number;
+  personDays: number;
+  womenParticipation: number;
+  scstParticipation: number;
+  totalFunds: number;
+  fundsUtilized: number;
+}
+
 const apiClient = new MGNREGSApiClient();
 
 export async function POST(request: NextRequest) {
@@ -27,24 +40,27 @@ export async function POST(request: NextRequest) {
     }
 
     // transform and store in database
-                      
-    const performanceData = apiData.records.map((record: any) => ({
-      districtId: record.district_id || districtId,
-      month: parseInt(record.month) || new Date().getMonth() + 1,
-      year: parseInt(record.year) || new Date().getFullYear(),
-      totalHouseholds: parseInt(record.total_households) || 0,
-      totalWorkers: parseInt(record.total_workers) || 0,
-      personDays: parseInt(record.person_days) || 0,
-      womenParticipation: parseFloat(record.women_participation) || 0,
-      scstParticipation: parseFloat(record.scst_participation) || 0,
-      totalFunds: parseFloat(record.total_funds) || 0,
-      fundsUtilized: parseFloat(record.funds_utilized) || 0,
-    }));
+
+    const performanceData: PerformanceRecord[] = apiData.records.map((record: unknown) => {
+      const r = record as Record<string, unknown>;
+      return {
+        districtId: (r.district_id as string) || districtId,
+        month: parseInt(r.month as string) || new Date().getMonth() + 1,
+        year: parseInt(r.year as string) || new Date().getFullYear(),
+        totalHouseholds: parseInt(r.total_households as string) || 0,
+        totalWorkers: parseInt(r.total_workers as string) || 0,
+        personDays: parseInt(r.person_days as string) || 0,
+        womenParticipation: parseFloat(r.women_participation as string) || 0,
+        scstParticipation: parseFloat(r.scst_participation as string) || 0,
+        totalFunds: parseFloat(r.total_funds as string) || 0,
+        fundsUtilized: parseFloat(r.funds_utilized as string) || 0,
+      };
+    });
 
     // store in database using transaction for better performance
 
     const results = await prisma.$transaction(
-      performanceData.map((data: any) =>
+      performanceData.map((data) =>
         prisma.performance.upsert({
           where: {
             districtId_month_year: {
@@ -64,10 +80,11 @@ export async function POST(request: NextRequest) {
         message: `Synced ${results.length} records`,
         data: results
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.log('Sync error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'sync failed';
     return NextResponse.json(
-        {success: false, error: error.message || 'sync failed'},
+        {success: false, error: errorMessage},
         {status: 500}
     )
   }

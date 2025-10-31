@@ -165,9 +165,9 @@ export default function DistrictSelector({ onDistrictSelect }: DistrictSelectorP
         <div className="flex items-start gap-3">
           <span className="text-blue-500 text-lg">💡</span>
           <div>
-            <p className="text-sm text-gray-700 font-medium">Can't find your district?</p>
+            <p className="text-sm text-gray-700 font-medium">Can&apos;t find your district?</p>
             <p className="text-xs text-gray-500 mt-1">
-              The district list includes major districts. If your district is not listed, 
+              The district list includes major districts. If your district is not listed,
               try searching with different spellings or contact support.
             </p>
           </div>

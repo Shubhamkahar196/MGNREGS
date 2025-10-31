@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { PerformanceData } from '../types';
 import { Card } from './ui/Card';
 import { Chart } from './ui/Chart';
-import { Loading, CardLoading, ChartLoading } from './ui/Loading';
+import { CardLoading, ChartLoading } from './ui/Loading';
 
 interface DashboardProps {
   districtId: string;
@@ -17,29 +17,29 @@ export default function Dashboard({ districtId, districtName }: DashboardProps) 
   const [error, setError] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  useEffect(() => {
-    fetchPerformanceData();
-  }, [districtId, selectedYear]);
-
-  const fetchPerformanceData = async () => {
+  const fetchPerformanceData = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
       const response = await fetch(`/api/data/district?districtId=${districtId}&year=${selectedYear}`);
       const result = await response.json();
-      
+
       if (result.success) {
         setPerformanceData(result.data);
       } else {
         setError(result.error || 'Failed to load data');
       }
-    } catch (error) {
-      console.error('Failed to fetch performance data:', error);
+    } catch {
+      console.error('Failed to fetch performance data');
       setError('Unable to connect to server. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [districtId, selectedYear]);
+
+  useEffect(() => {
+    fetchPerformanceData();
+  }, [fetchPerformanceData]);
 
   const refreshData = async () => {
     try {
@@ -59,7 +59,7 @@ export default function Dashboard({ districtId, districtName }: DashboardProps) 
       } else {
         setError('Failed to sync data: ' + result.error);
       }
-    } catch (error) {
+    } catch {
       setError('Sync failed. Please try again.');
     }
   };

@@ -14,7 +14,7 @@ export async function GET(request:NextRequest){
             );
         }
 
-        const whereClause: any = {districtId};
+        const whereClause: { districtId: string; year?: number } = { districtId };
         if(year){
             whereClause.year = parseInt(year);
         }

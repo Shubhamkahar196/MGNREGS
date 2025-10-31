@@ -1,10 +1,11 @@
 'use client';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ChartData } from '../../types';
 
 interface ChartProps {
   title: string;
-  data: any[];
+  data: ChartData[];
   dataKey: string;
   color: string;
   unit?: string;

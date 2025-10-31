@@ -21,10 +21,11 @@ export interface PerformanceData {
   fundsUtilized: number;
 }
 
-export interface ApiResponse {
+export interface ApiResponse<T = unknown> {
     success: boolean;
-    data?: any;
+    data?: T;
     error?: string;
+    message?: string;
 }
 
 export interface LocationData {
@@ -32,4 +33,10 @@ export interface LocationData {
     state: string;
     latitude: number;
     longitude: number;
+}
+
+export interface ChartData {
+    month: number;
+    monthName?: string;
+    [key: string]: number | string | undefined;
 }
