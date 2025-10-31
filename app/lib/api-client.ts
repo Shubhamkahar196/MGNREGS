@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { cache } from './cache';
 
-const API_BASE_URL = 'https://api.data.gov.in/resource/mgnrega';  // update it 
+// const API_BASE_URL = 'https://api.data.gov.in/resource/mgnrega';  // update it 
+
+const API_BASE_URL = process.env.API_URL;  
 const API_KEY = process.env.DATA_GOV_API_KEY;
 
 // Create axios instance with default config

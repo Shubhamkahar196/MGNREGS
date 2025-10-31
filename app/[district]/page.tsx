@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation';
-import Dashboard from '@/components/Dashboard';
-import { prisma } from '@/lib/database';
+import Dashboard from '../components/Dashboard';
+import { prisma } from '../lib/database';
 import { Metadata } from 'next';
+import Link from 'next/link'
 
 interface DistrictPageProps {
   params: {
@@ -33,7 +34,7 @@ export async function generateStaticParams() {
     select: { districtId: true },
   });
 
-  return districts.map((district) => ({
+  return districts.map((district: { districtId: string }) => ({
     district: district.districtId,
   }));
 }
@@ -64,13 +65,13 @@ export default async function DistrictPage({ params }: DistrictPageProps) {
                 </span>
               </div>
             </div>
-            <a
+            <Link
               href="/"
               className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
             >
               <span>←</span>
               Back to Home
-            </a>
+            </Link>
           </div>
         </div>
       </div>

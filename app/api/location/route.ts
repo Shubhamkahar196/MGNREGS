@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { LocationService } from '@/app/lib/location';
+import { LocationService } from '../../lib/location';
 
 export async function GET(request: NextRequest) {
   try {

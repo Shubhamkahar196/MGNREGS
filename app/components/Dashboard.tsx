@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { PerformanceData } from '@/types';
-import { Card } from '@/components/ui/Card';
-import { Chart } from '@/components/ui/Chart';
-import { Loading, CardLoading, ChartLoading } from '@/components/ui/Loading';
+import { PerformanceData } from '../types';
+import { Card } from './ui/Card';
+import { Chart } from './ui/Chart';
+import { Loading, CardLoading, ChartLoading } from './ui/Loading';
 
 interface DashboardProps {
   districtId: string;

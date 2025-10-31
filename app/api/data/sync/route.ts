@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MGNREGSApiClient } from "@/app/lib/api-client";
-import { prisma } from "@/app/lib/database";
-import { MonitorCheck } from "lucide-react";
+import { MGNREGSApiClient } from "../../../lib/api-client";
+import { prisma } from "../../../lib/database";
 
 const apiClient = new MGNREGSApiClient();
 
@@ -28,12 +27,12 @@ export async function POST(request: NextRequest) {
     }
 
     // transform and store in database
-
+                      
     const performanceData = apiData.records.map((record: any) => ({
       districtId: record.district_id || districtId,
       month: parseInt(record.month) || new Date().getMonth() + 1,
       year: parseInt(record.year) || new Date().getFullYear(),
-      totalHouseHolds: parseInt(record.total_households) || 0,
+      totalHouseholds: parseInt(record.total_households) || 0,
       totalWorkers: parseInt(record.total_workers) || 0,
       personDays: parseInt(record.person_days) || 0,
       womenParticipation: parseFloat(record.women_participation) || 0,
@@ -44,12 +43,12 @@ export async function POST(request: NextRequest) {
 
     // store in database using transaction for better performance
 
-    const results = await prisma.$transactio(
-      performanceData.map((data) =>
+    const results = await prisma.$transaction(
+      performanceData.map((data: any) =>
         prisma.performance.upsert({
           where: {
             districtId_month_year: {
-              districtId: data.district_id,
+              districtId: data.districtId,
               month: data.month,
               year: data.year,
             },
@@ -62,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
         success: true,
-        message: `Synced ${results.lenth} records`,
+        message: `Synced ${results.length} records`,
         data: results
     })
   } catch (error: any) {

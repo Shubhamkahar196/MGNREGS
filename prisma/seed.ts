@@ -1,15 +1,18 @@
-import { PrismaClient } from '@prisma/client';
+import { config } from 'dotenv';
+config();
+
+import { PrismaClient } from '../app/generated/prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seed...');
+  console.log(' Starting database seed...');
 
   // Clear existing data
   await prisma.performance.deleteMany();
   await prisma.district.deleteMany();
 
-  console.log('🗑️ Cleared existing data');
+  console.log(' Cleared existing data');
 
   // Seed districts
   const districts = [
@@ -18,22 +21,22 @@ async function main() {
     { districtId: 'mumbai', name: 'Mumbai', state: 'Maharashtra', latitude: 19.0760, longitude: 72.8777 },
     { districtId: 'nagpur', name: 'Nagpur', state: 'Maharashtra', latitude: 21.1458, longitude: 79.0882 },
     { districtId: 'nashik', name: 'Nashik', state: 'Maharashtra', latitude: 20.0059, longitude: 73.7910 },
-    
+
     // Karnataka
     { districtId: 'bangalore-urban', name: 'Bangalore Urban', state: 'Karnataka', latitude: 12.9716, longitude: 77.5946 },
     { districtId: 'mysore', name: 'Mysore', state: 'Karnataka', latitude: 12.2958, longitude: 76.6394 },
     { districtId: 'belgaum', name: 'Belgaum', state: 'Karnataka', latitude: 15.8497, longitude: 74.4977 },
-    
+
     // Rajasthan
     { districtId: 'jaipur', name: 'Jaipur', state: 'Rajasthan', latitude: 26.9124, longitude: 75.7873 },
     { districtId: 'udaipur', name: 'Udaipur', state: 'Rajasthan', latitude: 24.5854, longitude: 73.7125 },
     { districtId: 'jodhpur', name: 'Jodhpur', state: 'Rajasthan', latitude: 26.2389, longitude: 73.0243 },
-    
+
     // Uttar Pradesh
     { districtId: 'lucknow', name: 'Lucknow', state: 'Uttar Pradesh', latitude: 26.8467, longitude: 80.9462 },
     { districtId: 'varanasi', name: 'Varanasi', state: 'Uttar Pradesh', latitude: 25.3176, longitude: 82.9739 },
     { districtId: 'kanpur', name: 'Kanpur', state: 'Uttar Pradesh', latitude: 26.4499, longitude: 80.3319 },
-    
+
     // Other major districts
     { districtId: 'patna', name: 'Patna', state: 'Bihar', latitude: 25.5941, longitude: 85.1376 },
     { districtId: 'ahmedabad', name: 'Ahmedabad', state: 'Gujarat', latitude: 23.0225, longitude: 72.5714 },
@@ -44,10 +47,12 @@ async function main() {
     { districtId: 'chandigarh', name: 'Chandigarh', state: 'Chandigarh', latitude: 30.7333, longitude: 76.7794 },
   ];
 
+  const createdDistricts = [];
   for (const district of districts) {
-    await prisma.district.create({
+    const created = await prisma.district.create({
       data: district,
     });
+    createdDistricts.push(created);
   }
 
   console.log(`✅ Seeded ${districts.length} districts`);
@@ -56,7 +61,7 @@ async function main() {
   const currentYear = new Date().getFullYear();
   const performanceData = [];
 
-  for (const district of districts) {
+  for (const district of createdDistricts) {
     for (let month = 1; month <= 12; month++) {
       const totalHouseholds = Math.floor(Math.random() * 50000) + 10000;
       const totalWorkers = Math.floor(totalHouseholds * (Math.random() * 0.8 + 0.2));
@@ -67,7 +72,7 @@ async function main() {
       const fundsUtilized = totalFunds * (Math.random() * 0.2 + 0.8); // 80-100% utilization
 
       performanceData.push({
-        districtId: district.districtId,
+        districtId: district.id,
         month,
         year: currentYear,
         totalHouseholds,
@@ -83,7 +88,7 @@ async function main() {
 
   // Also add data for previous year
   const previousYear = currentYear - 1;
-  for (const district of districts) {
+  for (const district of createdDistricts) {
     for (let month = 1; month <= 12; month++) {
       const totalHouseholds = Math.floor(Math.random() * 45000) + 8000;
       const totalWorkers = Math.floor(totalHouseholds * (Math.random() * 0.8 + 0.2));
@@ -94,7 +99,7 @@ async function main() {
       const fundsUtilized = totalFunds * (Math.random() * 0.2 + 0.75); // 75-95% utilization
 
       performanceData.push({
-        districtId: district.districtId,
+        districtId: district.id,
         month,
         year: previousYear,
         totalHouseholds,
